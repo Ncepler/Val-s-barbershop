@@ -261,6 +261,7 @@ export function DemoHeader({
 
 export function DemoHero({
   heroImage,
+  heroVideo,
   eyebrow,
   line1,
   line2,
@@ -270,6 +271,7 @@ export function DemoHero({
   mediaLabel,
 }: {
   heroImage: string;
+  heroVideo?: string;
   eyebrow: string;
   line1: string;
   line2: string;
@@ -279,13 +281,30 @@ export function DemoHero({
   mediaLabel: string;
 }) {
   const href = telHref(phone);
+  const [mode, setMode] = React.useState<"image" | "video">("image");
+  const showVideo = mode === "video" && !!heroVideo;
+
   return (
     <section
       id="top"
       className="relative flex min-h-[88vh] items-end overflow-hidden px-6 pb-16 pt-32 md:px-10 md:pb-24"
     >
       <div className="absolute inset-0">
-        {heroImage ? (
+        {showVideo ? (
+          <video
+            key={heroVideo}
+            className="h-full w-full object-cover"
+            src={heroVideo}
+            poster={heroImage || undefined}
+            autoPlay
+            muted
+            loop
+            playsInline
+            // Video source may not exist yet (or the browser can't play a .mov
+            // container) — fall back to the photo rather than showing black.
+            onError={() => setMode("image")}
+          />
+        ) : heroImage ? (
           // eslint-disable-next-line @next/next/no-img-element
           <img src={heroImage} alt="" className="h-full w-full object-cover" />
         ) : (
@@ -307,6 +326,30 @@ export function DemoHero({
         )}
         <div className="absolute inset-0" style={{ background: "var(--d-hero-scrim)" }} />
       </div>
+      {heroVideo ? (
+        <div className="absolute bottom-6 left-6 z-20 flex gap-2 md:bottom-8 md:left-10">
+          {(["image", "video"] as const).map((m, i) => (
+            <button
+              key={m}
+              type="button"
+              onClick={() => setMode(m)}
+              aria-pressed={mode === m}
+              aria-label={m === "image" ? "Show photo background" : "Show video background"}
+              className="flex h-8 w-8 items-center justify-center text-[12px] font-semibold transition-opacity hover:opacity-90"
+              style={{
+                borderRadius: "var(--d-radius)",
+                border: "1px solid var(--d-line)",
+                background:
+                  mode === m ? "var(--d-accent)" : "color-mix(in srgb, var(--d-bg) 55%, transparent)",
+                color: mode === m ? "var(--d-onaccent)" : "var(--d-fg)",
+                backdropFilter: "blur(4px)",
+              }}
+            >
+              {i + 1}
+            </button>
+          ))}
+        </div>
+      ) : null}
       <div className="relative z-10 max-w-2xl">
         <Eyebrow>{eyebrow}</Eyebrow>
         <h1
