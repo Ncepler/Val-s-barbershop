@@ -1,0 +1,272 @@
+// Original template: Barbershop (components/demos/BarberDemo.tsx) — copied from live repo at 2026-08-25T03:15:17.553Z
+
+// Style demo — a barbershop homepage in the warm leather-lounge "Standard" mood
+// (SKILL §13c + §14c): warm espresso-black, candlelit bone text, BRASS/GOLD
+// accent (oxblood secondary), an Oswald condensed display, warm lamplit
+// photography. The cut list is a vintage PRICE BOARD with brass leader dots, and
+// "why this chair" is a warm lounge statement — not the numbered grid. "Standard
+// Barber Co." is a sample brand for the demo, not a client.
+
+import {
+  Contact,
+  CtaBand,
+  DemoFooter,
+  DemoHeader,
+  DemoHero,
+  DemoMarquee,
+  DemoShell,
+  type DemoTheme,
+  Eyebrow,
+  Faq,
+  FullBleedBreak,
+  Intro,
+  Media,
+  Rise,
+  Section,
+  TwoLine,
+  WorkGrid,
+} from "./system";
+
+const ACCENT = "#B0833F"; // brass / gold — warm lamplight (primary)
+const OXBLOOD = "#9A3B33"; // deep oxblood (secondary, used sparingly)
+
+// Warm leather-lounge barber mood (SKILL §13c).
+const THEME: DemoTheme = {
+  bg: "#16110C", // warm espresso-black, leather-dark (NOT the cool #0B0B0C)
+  surface: "#20180F", // worn-leather panel, a touch warmer/lighter
+  fg: "#F0E7D6", // warm bone / candlelit cream
+  body: "#C2B49C", // aged paper
+  muted: "#8A7B65", // dim brass-gray
+  line: "#2E2419", // dark leather seam
+  accent: ACCENT,
+  onAccent: "#16110C", // dark text on brass
+  font: "var(--font-tight)",
+  display: "var(--font-oswald)", // vintage condensed signage
+  heroScrim: "linear-gradient(180deg, rgba(22,17,12,.35), rgba(22,17,12,.85))",
+  breakScrim: "linear-gradient(180deg, rgba(22,17,12,.55), rgba(22,17,12,.9))",
+};
+const PHONE = "(631) 555-0185";
+const NAME = "Standard Barber Co.";
+
+// ── HERO BACKGROUND IMAGE ────────────────────────────────────────────────
+// Put your hero photo in /public (e.g. /public/demos/barber-hero.jpg), then
+// set the path below. Leave "" to show the labeled placeholder instead.
+const firstBarberImage = "/previews/firstBarberImage.webp";
+
+// The price board — real prices, leader dots, the section itself (§14c).
+const BOARD = [
+  { name: "Haircut", price: "$35", note: "Scissor or clipper. No rush, no upsell." },
+  { name: "Skin Fade", price: "$40", note: "Clean taper to the skin, blended by hand." },
+  { name: "Beard & Line-up", price: "$20", note: "Trimmed, shaped, lined up sharp." },
+  { name: "Hot-towel Shave", price: "$45", note: "Straight razor, hot towel, the full ritual." },
+  { name: "The Works", price: "$70", note: "Cut, shave, and towel: the whole chair." },
+  { name: "Kids (12 & under)", price: "$25", note: "Quick and easy, first cuts welcome." },
+];
+
+const WORK = [
+  { tag: "Cut", caption: "Classic scissor cut, side part" },
+  { tag: "Fade", caption: "Low skin fade, textured top" },
+  { tag: "Beard", caption: "Full beard shape & line-up" },
+  { tag: "Shave", caption: "Hot-towel straight-razor shave" },
+  { tag: "Kids", caption: "First-cut, kept easy" },
+  { tag: "Shop", caption: "Four chairs, mid-afternoon" },
+];
+
+const FAQ = [
+  { q: "Do I need an appointment?", a: "No, walk-ins are always welcome. But booking online takes under a minute and skips the wait." },
+  { q: "What are your hours?", a: "Tue–Sat, 9am to 7pm. If the pole out front is spinning, we're open and cutting." },
+  { q: "Do you cut kids' hair?", a: "We do. Kids 12 and under are $25, and we keep it quick and easy for the first-timers." },
+  { q: "How much is a cut?", a: "Haircut $35, skin fade $40, beard line-up $20, hot-towel shave $45. The works (cut, shave, towel) is $70." },
+  { q: "Cash or card?", a: "Either. And if you rebook on the way out, your next chair's already on the calendar." },
+];
+
+// ── The list — a vintage price board: name, brass leader dots, price (§14c). ─
+function PriceBoard() {
+  return (
+    <Section>
+      <Rise>
+        <Eyebrow>The list</Eyebrow>
+        <div className="mt-5">
+          <TwoLine a="The cuts." b="The prices." />
+        </div>
+      </Rise>
+      <Rise delay={0.1}>
+        <div
+          className="mt-12 p-8 md:p-12"
+          style={{
+            background: "var(--d-surface)",
+            border: "1px solid var(--d-line)",
+            borderRadius: "var(--d-radius)",
+            // warm lamplight on worn leather — texture, not a shape (§13c)
+            backgroundImage:
+              "radial-gradient(120% 80% at 50% 0%, rgba(176,131,63,.10), transparent 60%)",
+          }}
+        >
+          {BOARD.map((b, i) => (
+            <div
+              key={b.name}
+              className="flex flex-col gap-2 py-5 md:flex-row md:items-baseline md:gap-4"
+              style={i > 0 ? { borderTop: "1px solid var(--d-line)" } : undefined}
+            >
+              <span
+                className="text-[24px] font-medium uppercase leading-none tracking-[0.02em] md:text-[28px]"
+                style={{ color: "var(--d-fg)", fontFamily: "var(--d-display)" }}
+              >
+                {b.name}
+              </span>
+              {/* brass leader dots */}
+              <span
+                aria-hidden
+                className="hidden flex-1 translate-y-[-4px] md:block"
+                style={{ borderBottom: "2px dotted var(--d-accent)", opacity: 0.5 }}
+              />
+              <span className="hidden max-w-[16rem] text-[13px] leading-[1.5] md:block md:text-right" style={{ color: "var(--d-muted)" }}>
+                {b.note}
+              </span>
+              <span
+                className="text-[24px] font-medium leading-none md:text-[28px]"
+                style={{ color: "var(--d-accent)", fontFamily: "var(--d-display)" }}
+              >
+                {b.price}
+              </span>
+              <p className="text-[13px] leading-[1.5] md:hidden" style={{ color: "var(--d-muted)" }}>
+                {b.note}
+              </p>
+            </div>
+          ))}
+        </div>
+      </Rise>
+    </Section>
+  );
+}
+
+// ── Why this chair — the lounge statement beside a lamplit interior (§14c). ──
+function TheChair() {
+  return (
+    <Section dark>
+      <div className="grid items-center gap-10 md:grid-cols-2 md:gap-16">
+        <Rise>
+          <Media label="THE CHAIR: where you sit (4:5)" file="the-chair.jpg" ratio="4/5" />
+        </Rise>
+        <Rise delay={0.1}>
+          <Eyebrow>Why this chair</Eyebrow>
+          <div className="mt-6 space-y-6">
+            {[
+              "No rush. We take the time the cut needs and you leave looking like you, sharper.",
+              "No upsell. You asked for a haircut, you get a haircut, not a shelf of product.",
+              "Same barbers, every visit. The same hands, so your cut comes out the same every time.",
+            ].map((line) => (
+              <p
+                key={line}
+                className="text-[22px] font-medium leading-[1.3] md:text-[26px]"
+                style={{ color: "var(--d-fg)", fontFamily: "var(--d-display)" }}
+              >
+                {line}
+              </p>
+            ))}
+          </div>
+          <p className="mt-8 text-[15px] leading-[1.6]" style={{ color: "var(--d-body)" }}>
+            Pull up a chair. Rebook on your way out and the next one&apos;s already
+            on the calendar.
+          </p>
+          <span
+            className="mt-7 inline-block px-6 py-3.5 text-[13px] font-semibold uppercase tracking-[0.1em]"
+            style={{ background: OXBLOOD, color: "var(--d-fg)" }}
+          >
+            Book a chair
+          </span>
+        </Rise>
+      </div>
+    </Section>
+  );
+}
+
+export function BarberDemo() {
+  return (
+    <DemoShell accent={ACCENT} theme={THEME}>
+      <DemoHeader name={NAME} phone={PHONE} quoteLabel="Book a chair" />
+      <DemoHero
+        heroImage={firstBarberImage}
+        eyebrow="Barbershop · Patchogue"
+        line1="A good cut."
+        line2="Every time."
+        sub="Four chairs, no rush, no upsell. Book online or walk in; either way you leave sharp."
+        primaryCta="Book a chair"
+        phone={PHONE}
+        mediaLabel="HERO VIDEO: the shop floor (16:9)"
+      />
+      <DemoMarquee terms={["Cuts", "Fades", "Beards", "Shaves", "Kids"]} />
+      <Intro
+        eyebrow="Who we are"
+        line1="Old-school chair."
+        line2="No nonsense."
+        paragraphs={[
+          "No app trying to upsell you pomade, no rotating stranger who's never seen your hairline. Just a good cut from the same barbers.",
+          "Standard runs four chairs in Patchogue. Book online in a minute or walk in. If the pole's spinning, we're cutting.",
+        ]}
+        badges={[
+          ["Cuts to shaves", "Full menu"],
+          ["Walk-in or book", "Either works"],
+          ["Same barbers", "Consistent"],
+          ["Cash or card", "Easy"],
+        ]}
+      />
+      <PriceBoard />
+      <FullBleedBreak
+        eyebrow="The shop"
+        line1="Leather, brass,"
+        line2="and warm light."
+        paragraph="Standard is built to feel like a room you'd actually sit in: worn leather, a little brass, lamplight, and no one rushing you toward the door."
+        checklist={[
+          "Walk-ins always welcome",
+          "Book online in under a minute",
+          "Same barbers every visit",
+          "Cash or card",
+        ]}
+        cta="Book a chair"
+        mediaLabel="THE SHOP: chairs, brass, lamplight (16:9)"
+      />
+      <WorkGrid
+        eyebrow="Recent work"
+        line1="The work,"
+        line2="on the wall."
+        items={WORK}
+      />
+      <TheChair />
+      <Faq
+        eyebrow="Questions"
+        line1="The stuff"
+        line2="people ask."
+        items={FAQ}
+      />
+      <Contact
+        eyebrow="Book or visit"
+        line1="Your chair's"
+        line2="waiting."
+        copy="Book online in under a minute, call, or just come by: 311 Main St, Patchogue. If the pole's spinning, we're cutting."
+        phone={PHONE}
+        email="hello@standardbarber.demo"
+        location="311 Main St, Patchogue, NY"
+        serviceLabel="What you're booking"
+        serviceOptions={["Haircut", "Skin fade", "Beard & line-up", "Hot-towel shave", "The works", "Kids"]}
+      />
+      <CtaBand
+        line1="Need a cut?"
+        line2="Grab a chair."
+        cta="Book a chair"
+        phone={PHONE}
+      />
+      <DemoFooter
+        name={NAME}
+        descriptor="A four-chair barbershop: cuts, fades, beards, and hot-towel shaves."
+        area="311 Main St, Patchogue, Long Island"
+        services={["Haircut", "Skin fade", "Beard & line-up", "Hot-towel shave"]}
+        phone={PHONE}
+        email="hello@standardbarber.demo"
+        location="311 Main St, Patchogue, NY"
+        hours="Tue–Sat, 9am–7pm"
+        strip="Walk-ins Welcome · Cash or Card · Same Barbers"
+      />
+    </DemoShell>
+  );
+}
