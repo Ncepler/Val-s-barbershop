@@ -335,13 +335,16 @@ export function DemoHero({
 // ── Marquee ──────────────────────────────────────────────────────────────
 
 export function DemoMarquee({ terms }: { terms: string[] }) {
-  const loop = [...terms, ...terms];
+  const loop = [...terms, ...terms, ...terms];
   return (
     <div
-      className="overflow-hidden py-5"
+      className="d-marquee overflow-hidden py-5"
       style={{ borderTop: "1px solid var(--d-line)", borderBottom: "1px solid var(--d-line)" }}
+      tabIndex={0}
+      role="marquee"
+      aria-label={terms.join(", ")}
     >
-      <div className="flex w-max animate-[marquee_28s_linear_infinite] items-center gap-10">
+      <div className="d-marquee-track flex w-max items-center gap-10">
         {loop.map((t, i) => (
           <span
             key={i}
@@ -726,6 +729,7 @@ export function DemoFooter({
   hours,
   strip,
   googleUrl,
+  credit,
 }: {
   name: string;
   descriptor: string;
@@ -737,6 +741,7 @@ export function DemoFooter({
   hours: string;
   strip: string;
   googleUrl?: string;
+  credit?: { label: string; href: string };
 }) {
   const href = telHref(phone);
   return (
@@ -803,6 +808,18 @@ export function DemoFooter({
       >
         {strip}
       </div>
+      {credit ? (
+        <div className="mx-auto mt-4 max-w-6xl text-[11px]" style={{ color: "var(--d-muted)" }}>
+          <a
+            href={credit.href}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="opacity-70 transition-opacity hover:opacity-100"
+          >
+            {credit.label}
+          </a>
+        </div>
+      ) : null}
     </footer>
   );
 }

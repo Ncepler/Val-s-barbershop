@@ -2,10 +2,10 @@
 // Warm leather-lounge mood, kept exactly as the template's palette:
 // espresso-black, candlelit bone text, brass accent, oxblood secondary,
 // Oswald display face. Walk-ins or a phone call only — no online booking,
-// cash only. Val and Vlad are the only two barbers named anywhere here.
+// cash only. Al and Vlad run the shop; their dad Rafael also cuts hair —
+// three barbers named anywhere here, no ranking implied by order.
 
 import {
-  Contact,
   CtaBand,
   DemoFooter,
   DemoHeader,
@@ -21,7 +21,6 @@ import {
   Rise,
   Section,
   TwoLine,
-  WorkGrid,
 } from "./system";
 import { telHref } from "./phone";
 
@@ -62,16 +61,25 @@ const BOARD = [
   { name: "Cut, Shampoo & Style", price: "$35", note: "Washed, cut, and styled before you leave the chair." },
 ];
 
-const WORK = [
-  { tag: "Haircut", caption: "Men's cut, scissor-finished" },
-  { tag: "Cut + Beard", caption: "Haircut with the beard shaped to match" },
-  { tag: "Kids", caption: "Under-12 cut, done patiently" },
-  { tag: "Seniors", caption: "Senior cut, clean and classic" },
-  { tag: "Hot Towel", caption: "Royal hot towel shave, straight razor" },
-  { tag: "Beard + Shave", caption: "Beard trimmed, cheeks and neck shaved" },
-  { tag: "Beard", caption: "Beard trim, shaped and tightened" },
-  { tag: "Shape-up", caption: "Lines redrawn between cuts" },
-  { tag: "Style", caption: "Cut, shampoo, and styled" },
+const BARBERS = [
+  {
+    name: "Al",
+    role: "Runs the shop, cuts every day.",
+    label: "AL: headshot (4:5)",
+    file: "al-headshot.jpg",
+  },
+  {
+    name: "Vlad",
+    role: "Runs the shop, cuts every day.",
+    label: "VLAD: headshot (4:5)",
+    file: "vlad-headshot.jpg",
+  },
+  {
+    name: "Rafael",
+    role: "Al and Vlad's dad. Still behind the chair.",
+    label: "RAFAEL: headshot (4:5)",
+    file: "rafael-headshot.jpg",
+  },
 ];
 
 const FAQ = [
@@ -102,9 +110,9 @@ function PriceBoard() {
   return (
     <Section>
       <Rise>
-        <Eyebrow>The list</Eyebrow>
+        <Eyebrow>Prices</Eyebrow>
         <div className="mt-5">
-          <TwoLine a="The cuts." b="The prices." />
+          <TwoLine a="Every cut," b="one price." />
         </div>
       </Rise>
       <Rise delay={0.1}>
@@ -156,6 +164,38 @@ function PriceBoard() {
   );
 }
 
+// ── Your barbers — three headshots, equal weight, no ranking implied. ──────
+function YourBarbers() {
+  return (
+    <Section>
+      <Rise>
+        <Eyebrow>Your barbers</Eyebrow>
+        <div className="mt-5">
+          <TwoLine a="Al, Vlad," b="and Rafael." />
+        </div>
+      </Rise>
+      <div className="mt-12 grid grid-cols-1 gap-8 md:grid-cols-3">
+        {BARBERS.map((b, i) => (
+          <Rise key={b.name} delay={i * 0.08}>
+            <Media label={b.label} file={b.file} ratio="4/5" />
+            <div className="mt-4">
+              <div
+                className="text-[20px] font-medium uppercase tracking-[0.02em]"
+                style={{ color: "var(--d-fg)", fontFamily: "var(--d-display)" }}
+              >
+                {b.name}
+              </div>
+              <p className="mt-1 text-[14px] leading-[1.5]" style={{ color: "var(--d-muted)" }}>
+                {b.role}
+              </p>
+            </div>
+          </Rise>
+        ))}
+      </div>
+    </Section>
+  );
+}
+
 // ── Why this chair — the lounge statement beside a lamplit interior. ───────
 function TheChair() {
   return (
@@ -168,7 +208,7 @@ function TheChair() {
           <Eyebrow>Why this chair</Eyebrow>
           <div className="mt-6 space-y-6">
             {[
-              "Val and Vlad, every visit. Two barbers who already know your head, so the cut comes out the same every time.",
+              "We've been cutting hair on this block for years, and it shows in the cut.",
               "Kids are easy here. Patient hands, no rush, and parents who've been coming for years.",
               "Every cut ends the same way. Hot towel, shoulder massage, out the door sharp.",
             ].map((line) => (
@@ -205,9 +245,9 @@ export function BarberDemo() {
       <DemoHero
         heroImage={firstBarberImage}
         eyebrow="Barbershop · Roslyn Village"
-        line1="Two brothers."
+        line1="Family barbershop."
         line2="One good cut."
-        sub="Val and Vlad cut hair on Main Street in Roslyn. Walk in when you have a minute, or call and we'll hold you a chair."
+        sub="Al, Vlad, and Rafael cut hair on Main Street in Roslyn. Walk in when you have a minute, or call and we'll hold you a chair."
         primaryCta="Call (516) 399-2220"
         phone={PHONE}
         mediaLabel="HERO: the shop floor, chairs and brass, warm lamplight (16:9)"
@@ -218,7 +258,7 @@ export function BarberDemo() {
         line1="Small shop."
         line2="Sharp cuts."
         paragraphs={[
-          "Val and Vlad run the place themselves. The same two barbers every visit, which is why your cut comes out the same every time.",
+          "Al and Vlad run the shop. Their dad Rafael still cuts hair here too — three barbers on Main Street.",
           "We're on Main Street in Roslyn Village, a short walk from the clock tower. Every haircut finishes the same way — hot towel, shoulder massage, out the door sharp.",
         ]}
         badges={[
@@ -244,28 +284,13 @@ export function BarberDemo() {
         phone={PHONE}
         mediaLabel="THE SHOP: interior, chairs and mirrors, warm light (16:9)"
       />
-      <WorkGrid
-        eyebrow="Recent work"
-        line1="The work,"
-        line2="on the wall."
-        items={WORK}
-      />
+      <YourBarbers />
       <TheChair />
       <Faq
         eyebrow="Questions"
         line1="The stuff"
         line2="people ask."
         items={FAQ}
-      />
-      <Contact
-        eyebrow="Come by or call"
-        line1="Your chair's"
-        line2="on Main Street."
-        copy="Walk in, or call (516) 399-2220 and we'll hold one for you. We're at 8 Main St in Roslyn Village, open Sunday through Friday and closed Saturdays. Cash only."
-        phone={PHONE}
-        location="8 Main St, Roslyn, NY 11576"
-        serviceLabel="What you're coming in for"
-        serviceOptions={BOARD.map((b) => b.name)}
       />
       <CtaBand
         line1="Need a cut?"
@@ -283,6 +308,7 @@ export function BarberDemo() {
         hours="Mon–Wed 9–7 · Thu 9–8 · Fri 9–7 · Sat closed · Sun 9–6"
         strip="Walk-Ins Welcome · Cash Only · Closed Saturdays"
         googleUrl="https://share.google/UdcSv1yE5dZ348ZHF"
+        credit={{ label: "Site by vilas.studio", href: "https://vilas.studio" }}
       />
     </DemoShell>
   );

@@ -28,7 +28,20 @@ body {
     transform: translateX(0);
   }
   to {
-    transform: translateX(-50%);
+    transform: translateX(-33.3334%);
+  }
+}
+
+.d-marquee-track {
+  animation: marquee 28s linear infinite;
+}
+.d-marquee:hover .d-marquee-track,
+.d-marquee:focus-within .d-marquee-track {
+  animation-play-state: paused;
+}
+@media (prefers-reduced-motion: reduce) {
+  .d-marquee-track {
+    animation: none;
   }
 }
 
