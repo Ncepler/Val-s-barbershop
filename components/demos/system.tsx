@@ -257,6 +257,42 @@ export function DemoHeader({
   );
 }
 
+// ── Sticky logo mark ─────────────────────────────────────────────────────
+// Small fixed badge, bottom-left. Hidden until the hero (`#top`) scrolls
+// out of view, then fades in; doubles as a tap-back-to-top control.
+
+export function StickyLogo({ src, label = "Back to top" }: { src: string; label?: string }) {
+  const [visible, setVisible] = React.useState(false);
+
+  React.useEffect(() => {
+    const hero = document.getElementById("top");
+    if (!hero) return;
+    const observer = new IntersectionObserver(([entry]) => setVisible(!entry.isIntersecting), {
+      threshold: 0,
+    });
+    observer.observe(hero);
+    return () => observer.disconnect();
+  }, []);
+
+  return (
+    <a
+      href="#top"
+      aria-label={label}
+      className="fixed bottom-6 left-6 z-40 h-11 w-11 overflow-hidden rounded-full transition-all duration-300 ease-out md:bottom-8 md:left-10"
+      style={{
+        border: "1px solid var(--d-line)",
+        boxShadow: "0 4px 16px rgba(0,0,0,.35)",
+        opacity: visible ? 1 : 0,
+        transform: visible ? "translateY(0)" : "translateY(10px)",
+        pointerEvents: visible ? "auto" : "none",
+      }}
+    >
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img src={src} alt="" className="h-full w-full object-cover" />
+    </a>
+  );
+}
+
 // ── Hero ─────────────────────────────────────────────────────────────────
 
 export function DemoHero({

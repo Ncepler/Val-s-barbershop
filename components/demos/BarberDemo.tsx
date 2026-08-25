@@ -20,6 +20,7 @@ import {
   Media,
   Rise,
   Section,
+  StickyLogo,
   TwoLine,
 } from "./system";
 import { telHref } from "./phone";
@@ -245,6 +246,7 @@ function TheChair() {
 export function BarberDemo() {
   return (
     <DemoShell accent={ACCENT} theme={THEME}>
+      <StickyLogo src="/icon.png" />
       <DemoHeader name={NAME} phone={PHONE} quoteLabel="Call the shop" />
       <DemoHero
         heroImage={firstBarberImage}
