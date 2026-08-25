@@ -46,8 +46,8 @@ const THEME: DemoTheme = {
 const PHONE = "(516) 399-2220";
 const NAME = "Val's Elegant Barbershop";
 
-// No photos were supplied — every Media placeholder stays empty and labeled.
-const firstBarberImage = "";
+// Hero photo lives in /public — every other Media placeholder stays empty and labeled.
+const firstBarberImage = "/main-hero.png";
 
 // The price board — nine services, exact prices and notes.
 const BOARD = [
