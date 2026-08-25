@@ -1,0 +1,54 @@
+@import "tailwindcss";
+
+:root {
+  --background: #16110c;
+  --foreground: #f0e7d6;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+}
+
+html {
+  color-scheme: dark;
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+@keyframes marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+summary {
+  list-style: none;
+}
+summary::-webkit-details-marker {
+  display: none;
+}
+
+.d-input {
+  border: 1px solid var(--d-line);
+  background: var(--d-surface);
+  color: var(--d-fg);
+  border-radius: var(--d-radius);
+}
+.d-input::placeholder {
+  color: var(--d-muted);
+}
+.d-input:focus {
+  outline: none;
+  border-color: var(--d-accent);
+}
