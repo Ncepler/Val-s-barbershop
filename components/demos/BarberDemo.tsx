@@ -22,6 +22,7 @@ import {
   Section,
   StickyLogo,
   TwoLine,
+  type WeekHours,
 } from "./system";
 import { telHref } from "./phone";
 
@@ -45,6 +46,18 @@ const THEME: DemoTheme = {
 
 const PHONE = "(516) 399-2220";
 const NAME = "Val's Elegant Barbershop";
+
+// Sunday-first (index 0 = Sun … 6 = Sat), matching the footer's
+// "Mon–Wed 9–7 · Thu 9–8 · Fri 9–7 · Sat closed · Sun 9–6" — keep in sync.
+const SHOP_HOURS: WeekHours = [
+  { open: 9, close: 18 }, // Sun
+  { open: 9, close: 19 }, // Mon
+  { open: 9, close: 19 }, // Tue
+  { open: 9, close: 19 }, // Wed
+  { open: 9, close: 20 }, // Thu
+  { open: 9, close: 19 }, // Fri
+  null, // Sat — closed
+];
 
 // Hero photo lives in /public — every other Media placeholder stays empty and labeled.
 const firstBarberImage = "/main-hero.png";
@@ -247,7 +260,7 @@ export function BarberDemo() {
   return (
     <DemoShell accent={ACCENT} theme={THEME}>
       <StickyLogo src="/icon.png" />
-      <DemoHeader name={NAME} phone={PHONE} quoteLabel="Call the shop" />
+      <DemoHeader name={NAME} phone={PHONE} quoteLabel="Call the shop" hours={SHOP_HOURS} />
       <DemoHero
         heroImage={firstBarberImage}
         heroVideo={firstBarberVideo}

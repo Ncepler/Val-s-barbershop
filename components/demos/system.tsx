@@ -202,16 +202,119 @@ export function Media({
   );
 }
 
+// ── Open/closed status ──────────────────────────────────────────────────
+// Reads the shop's posted hours against the current time in the Eastern
+// timezone (EST/EDT, wherever the visitor actually is) and renders a
+// spinning barber pole when open, or a note on when the shop reopens.
+
+export type DayHours = { open: number; close: number } | null;
+// Sunday-first, matching Date/Intl's weekday indexing (0 = Sun … 6 = Sat).
+export type WeekHours = [DayHours, DayHours, DayHours, DayHours, DayHours, DayHours, DayHours];
+
+const DAY_NAMES = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+
+function getEasternParts(date: Date): { weekday: number; hour: number; minute: number } {
+  const parts = new Intl.DateTimeFormat("en-US", {
+    timeZone: "America/New_York",
+    weekday: "short",
+    hour: "numeric",
+    minute: "numeric",
+    hour12: false,
+  }).formatToParts(date);
+  const map: Record<string, string> = {};
+  for (const p of parts) map[p.type] = p.value;
+  const weekdayIndex: Record<string, number> = { Sun: 0, Mon: 1, Tue: 2, Wed: 3, Thu: 4, Fri: 5, Sat: 6 };
+  return {
+    weekday: weekdayIndex[map.weekday],
+    hour: Number(map.hour) % 24, // midnight can format as "24"
+    minute: Number(map.minute),
+  };
+}
+
+function formatHour(h: number): string {
+  const hour24 = Math.floor(h);
+  const minutes = Math.round((h - hour24) * 60);
+  const period = hour24 >= 12 ? "PM" : "AM";
+  const hour12 = hour24 % 12 || 12;
+  return minutes === 0 ? `${hour12} ${period}` : `${hour12}:${String(minutes).padStart(2, "0")} ${period}`;
+}
+
+type ShopStatusResult = { open: true; closesAt: string } | { open: false; message: string };
+
+function getShopStatus(hours: WeekHours, now: Date): ShopStatusResult {
+  const { weekday, hour, minute } = getEasternParts(now);
+  const minutesNow = hour * 60 + minute;
+  const today = hours[weekday];
+
+  if (today && minutesNow >= today.open * 60 && minutesNow < today.close * 60) {
+    return { open: true, closesAt: formatHour(today.close) };
+  }
+  if (today && minutesNow < today.open * 60) {
+    return { open: false, message: `Opens today at ${formatHour(today.open)}` };
+  }
+  for (let i = 1; i <= 7; i++) {
+    const day = hours[(weekday + i) % 7];
+    if (day) {
+      const label = i === 1 ? "tomorrow" : DAY_NAMES[(weekday + i) % 7];
+      return { open: false, message: `Opens ${label} at ${formatHour(day.open)}` };
+    }
+  }
+  return { open: false, message: "Call for hours" };
+}
+
+function ShopStatus({ hours }: { hours: WeekHours }) {
+  // Starts unmounted so the server render (no fixed "now") and the first
+  // client render agree; the real status fills in a tick after mount.
+  const [now, setNow] = React.useState<Date | null>(null);
+
+  React.useEffect(() => {
+    const tick = () => setNow(new Date());
+    tick();
+    const id = setInterval(tick, 30_000);
+    return () => clearInterval(id);
+  }, []);
+
+  if (!now) return null;
+  const status = getShopStatus(hours, now);
+
+  return (
+    <div
+      className="hidden items-center gap-2 text-[11px] font-medium uppercase tracking-[0.08em] sm:flex"
+      style={{ color: status.open ? "var(--d-fg)" : "var(--d-muted)" }}
+    >
+      {status.open ? (
+        <span
+          className="d-barberpole h-4 w-4 shrink-0 rounded-full"
+          style={{ boxShadow: "0 0 0 1px var(--d-line)" }}
+          aria-hidden
+        />
+      ) : (
+        <span
+          className="h-4 w-4 shrink-0 rounded-full"
+          style={{ background: "var(--d-line)" }}
+          aria-hidden
+        />
+      )}
+      <span>{status.open ? "Open now" : "Closed"}</span>
+      <span className="hidden opacity-70 md:inline">
+        {status.open ? `· till ${status.closesAt}` : `· ${status.message}`}
+      </span>
+    </div>
+  );
+}
+
 // ── Header ───────────────────────────────────────────────────────────────
 
 export function DemoHeader({
   name,
   phone,
   quoteLabel,
+  hours,
 }: {
   name: string;
   phone: string;
   quoteLabel: string;
+  hours?: WeekHours;
 }) {
   const [line1, line2] = wordmarkLines(name);
   const href = telHref(phone);
@@ -238,6 +341,7 @@ export function DemoHeader({
         </div>
       </a>
       <div className="flex items-center gap-3 md:gap-6">
+        {hours ? <ShopStatus hours={hours} /> : null}
         <a
           href={href}
           className="hidden text-[14px] font-medium tracking-[0.02em] md:inline"

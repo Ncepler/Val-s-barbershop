@@ -45,6 +45,32 @@ body {
   }
 }
 
+@keyframes barberpole {
+  from {
+    background-position: 0 0;
+  }
+  to {
+    background-position: 28px 0;
+  }
+}
+
+.d-barberpole {
+  background-image: repeating-linear-gradient(
+    -45deg,
+    #b0272a 0 5px,
+    #f4ede0 5px 10px,
+    #1c3f7c 10px 15px,
+    #f4ede0 15px 20px
+  );
+  background-size: 200% 200%;
+  animation: barberpole 0.9s linear infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .d-barberpole {
+    animation: none;
+  }
+}
+
 summary {
   list-style: none;
 }
