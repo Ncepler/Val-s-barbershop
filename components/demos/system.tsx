@@ -365,7 +365,7 @@ export function DemoHeader({
 // Small fixed badge, bottom-left. Hidden until the hero (`#top`) scrolls
 // out of view, then fades in; doubles as a tap-back-to-top control.
 
-export function StickyLogo({ src, label = "Back to top" }: { src: string; label?: string }) {
+export function StickyLogo({ src, label = "Expand logo" }: { src: string; label?: string }) {
   const [visible, setVisible] = React.useState(false);
   const [expanded, setExpanded] = React.useState(false);
 
@@ -380,19 +380,22 @@ export function StickyLogo({ src, label = "Back to top" }: { src: string; label?
   }, []);
 
   function handleClick() {
-    setExpanded(true);
-    window.setTimeout(() => setExpanded(false), 650);
+    setExpanded((prev) => !prev);
   }
 
   return (
-    <a
-      href="#top"
+    <button
+      type="button"
       aria-label={label}
+      aria-pressed={expanded}
       onClick={handleClick}
       className="fixed bottom-6 left-6 h-11 w-11 overflow-hidden rounded-full md:bottom-8 md:left-10"
       style={{
         border: "1px solid var(--d-line)",
         boxShadow: "0 4px 16px rgba(0,0,0,.35)",
+        padding: 0,
+        background: "none",
+        appearance: "none",
         opacity: expanded || visible ? 1 : 0,
         transform: expanded
           ? "translateY(0) scale(9)"
@@ -401,15 +404,16 @@ export function StickyLogo({ src, label = "Back to top" }: { src: string; label?
             : "translateY(10px) scale(1)",
         transformOrigin: "bottom left",
         transitionProperty: "opacity, transform",
-        transitionDuration: expanded ? "650ms" : "300ms",
-        transitionTimingFunction: expanded ? "cubic-bezier(.2,.8,.2,1)" : "ease-out",
+        transitionDuration: "500ms",
+        transitionTimingFunction: "cubic-bezier(.2,.8,.2,1)",
         pointerEvents: visible ? "auto" : "none",
         zIndex: expanded ? 100 : 40,
+        cursor: "pointer",
       }}
     >
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img src={src} alt="" className="h-full w-full object-cover" />
-    </a>
+    </button>
   );
 }
 
