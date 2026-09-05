@@ -367,6 +367,7 @@ export function DemoHeader({
 
 export function StickyLogo({ src, label = "Back to top" }: { src: string; label?: string }) {
   const [visible, setVisible] = React.useState(false);
+  const [expanded, setExpanded] = React.useState(false);
 
   React.useEffect(() => {
     const hero = document.getElementById("top");
@@ -378,17 +379,32 @@ export function StickyLogo({ src, label = "Back to top" }: { src: string; label?
     return () => observer.disconnect();
   }, []);
 
+  function handleClick() {
+    setExpanded(true);
+    window.setTimeout(() => setExpanded(false), 650);
+  }
+
   return (
     <a
       href="#top"
       aria-label={label}
-      className="fixed bottom-6 left-6 z-40 h-11 w-11 overflow-hidden rounded-full transition-all duration-300 ease-out md:bottom-8 md:left-10"
+      onClick={handleClick}
+      className="fixed bottom-6 left-6 h-11 w-11 overflow-hidden rounded-full md:bottom-8 md:left-10"
       style={{
         border: "1px solid var(--d-line)",
         boxShadow: "0 4px 16px rgba(0,0,0,.35)",
-        opacity: visible ? 1 : 0,
-        transform: visible ? "translateY(0)" : "translateY(10px)",
+        opacity: expanded || visible ? 1 : 0,
+        transform: expanded
+          ? "translateY(0) scale(9)"
+          : visible
+            ? "translateY(0) scale(1)"
+            : "translateY(10px) scale(1)",
+        transformOrigin: "bottom left",
+        transitionProperty: "opacity, transform",
+        transitionDuration: expanded ? "650ms" : "300ms",
+        transitionTimingFunction: expanded ? "cubic-bezier(.2,.8,.2,1)" : "ease-out",
         pointerEvents: visible ? "auto" : "none",
+        zIndex: expanded ? 100 : 40,
       }}
     >
       {/* eslint-disable-next-line @next/next/no-img-element */}
