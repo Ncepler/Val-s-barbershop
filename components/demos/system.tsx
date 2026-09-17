@@ -389,7 +389,7 @@ export function StickyLogo({ src, label = "Expand logo" }: { src: string; label?
       aria-label={label}
       aria-pressed={expanded}
       onClick={handleClick}
-      className="fixed bottom-6 left-6 h-11 w-11 overflow-hidden rounded-full md:bottom-8 md:left-10"
+      className="fixed bottom-6 left-6 overflow-hidden rounded-full md:bottom-8 md:left-10"
       style={{
         border: "1px solid var(--d-line)",
         boxShadow: "0 4px 16px rgba(0,0,0,.35)",
@@ -397,13 +397,10 @@ export function StickyLogo({ src, label = "Expand logo" }: { src: string; label?
         background: "none",
         appearance: "none",
         opacity: expanded || visible ? 1 : 0,
-        transform: expanded
-          ? "translateY(0) scale(9)"
-          : visible
-            ? "translateY(0) scale(1)"
-            : "translateY(10px) scale(1)",
-        transformOrigin: "bottom left",
-        transitionProperty: "opacity, transform",
+        width: expanded ? "min(60vw, 60vh, 320px)" : "2.75rem",
+        height: expanded ? "min(60vw, 60vh, 320px)" : "2.75rem",
+        transform: expanded || visible ? "translateY(0)" : "translateY(10px)",
+        transitionProperty: "opacity, transform, width, height",
         transitionDuration: "500ms",
         transitionTimingFunction: "cubic-bezier(.2,.8,.2,1)",
         pointerEvents: visible ? "auto" : "none",
