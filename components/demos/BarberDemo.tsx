@@ -61,10 +61,6 @@ const SHOP_HOURS: WeekHours = [
 
 // Hero photo lives in /public — every other Media placeholder stays empty and labeled.
 const firstBarberImage = "/main-hero.png";
-// Hero video toggle — wired ahead of the file. Drop hero-video.mov in
-// /public and the "2" button in the hero starts working immediately;
-// until then it silently falls back to the photo.
-const firstBarberVideo = "/hero-video.mov";
 
 // The price board — nine services, exact prices and notes.
 const BOARD = [
@@ -263,7 +259,6 @@ export function BarberDemo() {
       <DemoHeader name={NAME} phone={PHONE} quoteLabel="Call the shop" hours={SHOP_HOURS} />
       <DemoHero
         heroImage={firstBarberImage}
-        heroVideo={firstBarberVideo}
         eyebrow="Barbershop · Roslyn Village"
         line1="Family barbershop."
         line2="One good cut."
