@@ -379,7 +379,17 @@ export function StickyLogo({ src, label = "Expand logo" }: { src: string; label?
     return () => observer.disconnect();
   }, []);
 
-  function handleClick() {
+  React.useEffect(() => {
+    if (!expanded) return;
+    function collapse() {
+      setExpanded(false);
+    }
+    document.addEventListener("click", collapse);
+    return () => document.removeEventListener("click", collapse);
+  }, [expanded]);
+
+  function handleClick(e: React.MouseEvent) {
+    e.stopPropagation();
     setExpanded((prev) => !prev);
   }
 
@@ -403,7 +413,7 @@ export function StickyLogo({ src, label = "Expand logo" }: { src: string; label?
         transitionProperty: "opacity, transform, width, height",
         transitionDuration: "500ms",
         transitionTimingFunction: "cubic-bezier(.2,.8,.2,1)",
-        pointerEvents: visible ? "auto" : "none",
+        pointerEvents: visible || expanded ? "auto" : "none",
         zIndex: expanded ? 100 : 40,
         cursor: "pointer",
       }}
