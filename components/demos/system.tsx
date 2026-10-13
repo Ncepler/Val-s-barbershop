@@ -591,6 +591,7 @@ export function FullBleedBreak({
   cta,
   phone,
   mediaLabel,
+  image,
 }: {
   eyebrow: string;
   line1: string;
@@ -600,19 +601,25 @@ export function FullBleedBreak({
   cta: string;
   phone: string;
   mediaLabel: string;
+  image?: string;
 }) {
   const href = telHref(phone);
   return (
     <section className="relative overflow-hidden px-6 py-24 md:px-10 md:py-32">
       <div className="absolute inset-0">
-        <div className="flex h-full w-full items-center justify-center" style={{ background: "var(--d-surface)" }}>
-          <span
-            className="max-w-xs text-center text-[12px] font-medium uppercase leading-[1.7] tracking-[0.14em]"
-            style={{ color: "var(--d-muted)" }}
-          >
-            {mediaLabel}
-          </span>
-        </div>
+        {image ? (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img src={image} alt={mediaLabel} className="h-full w-full object-cover" />
+        ) : (
+          <div className="flex h-full w-full items-center justify-center" style={{ background: "var(--d-surface)" }}>
+            <span
+              className="max-w-xs text-center text-[12px] font-medium uppercase leading-[1.7] tracking-[0.14em]"
+              style={{ color: "var(--d-muted)" }}
+            >
+              {mediaLabel}
+            </span>
+          </div>
+        )}
         <div className="absolute inset-0" style={{ background: "var(--d-break-scrim)" }} />
       </div>
       <Rise className="relative z-10 mx-auto max-w-xl text-center">
@@ -630,7 +637,7 @@ export function FullBleedBreak({
         </p>
         <ul className="mx-auto mt-8 flex max-w-md flex-col items-center gap-2.5">
           {checklist.map((c) => (
-            <li key={c} className="text-[13px] uppercase tracking-[0.06em]" style={{ color: "var(--d-muted)" }}>
+            <li key={c} className="text-[13px] uppercase tracking-[0.06em]" style={{ color: "var(--d-body)" }}>
               {c}
             </li>
           ))}

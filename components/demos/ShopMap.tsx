@@ -34,7 +34,9 @@ function P(x: number, y: number, z: number): Pt {
 const pts = (list: Pt[]) => list.map(([a, b]) => `${a.toFixed(1)},${b.toFixed(1)}`).join(" ");
 
 // ── Chairs ─────────────────────────────────────────────────────────────────
-export type ChairInfo = { n: number; name: string | null; note: string };
+// n is the chair's position counting back from the door (1–4). Chairs not
+// listed are drawn but left unlabeled.
+export type ChairInfo = { n: number; name: string; note: string };
 
 const CHAIR_X = 4.6; // center of the chair base, feet off the station wall
 const CHAIR_YS = [10, 16.5, 23, 29.5];
@@ -258,7 +260,7 @@ export function ShopMap({ chairs }: { chairs: ChairInfo[] }) {
           <title id="shopmap-title">Where each barber sits</title>
           <desc id="shopmap-desc">
             Cutaway of the shop seen from the front door. Four barber chairs run front to back along the
-            mirrors on the left wall: chair one is Al, chair two is open, chair three is Vlad, chair four
+            mirrors on the left wall: chair one is Al, chair three is Vlad, chair four
             is Rafael. The waiting area and a long mirror are on the right, the register is just inside the door.
           </desc>
           <defs>
@@ -378,26 +380,26 @@ export function ShopMap({ chairs }: { chairs: ChairInfo[] }) {
           ))}
 
           {/* leader lines from each label down to its headrest */}
-          {CHAIR_YS.map((y, i) => {
-            const [hx, hy] = P(CHAIR_X + 1.55, y, 4.7);
-            const [lx, ly] = anchors[i];
+          {chairs.map(({ n }) => {
+            const [hx, hy] = P(CHAIR_X + 1.55, CHAIR_YS[n - 1], 4.7);
+            const [lx, ly] = anchors[n - 1];
             return (
               <line
-                key={`lead${i}`}
+                key={`lead${n}`}
                 x1={lx}
                 y1={ly}
                 x2={hx}
                 y2={hy}
                 stroke={C.brass}
                 strokeWidth={1.5}
-                strokeOpacity={active === null || active === i + 1 ? 0.9 : 0.25}
+                strokeOpacity={active === null || active === n ? 0.9 : 0.25}
               />
             );
           })}
         </svg>
 
         {/* chair badges */}
-        {chairs.map((c, i) => {
+        {chairs.map((c) => {
           const on = active === c.n;
           const off = active !== null && !on;
           return (
@@ -409,16 +411,16 @@ export function ShopMap({ chairs }: { chairs: ChairInfo[] }) {
               onFocus={() => setActive(c.n)}
               onBlur={() => setActive(null)}
               onClick={() => setActive(on ? null : c.n)}
-              aria-label={`Chair ${c.n}: ${c.name ?? "open chair"}`}
+              aria-label={`Chair ${c.n}: ${c.name}`}
               className="absolute flex -translate-y-1/2 items-center gap-1.5 whitespace-nowrap p-1 text-[10px] font-semibold uppercase tracking-[0.08em] transition-all duration-300 sm:gap-2 sm:px-2.5 sm:py-1.5 sm:text-[12px]"
               style={{
-                ...pct(anchors[i]),
-                background: on ? "var(--d-accent)" : c.name ? "rgba(22,17,12,.92)" : "rgba(22,17,12,.75)",
-                color: on ? "var(--d-onaccent)" : c.name ? "var(--d-fg)" : "var(--d-muted)",
-                border: `1px solid ${c.name || on ? "var(--d-accent)" : "var(--d-line)"}`,
-                opacity: off ? 0.45 : 1,
+                ...pct(anchors[c.n - 1]),
+                background: on ? "var(--d-accent)" : "rgba(22,17,12,.92)",
+                color: on ? "var(--d-onaccent)" : "var(--d-fg)",
+                border: "1px solid var(--d-accent)",
+                opacity: off ? 0.6 : 1,
                 fontFamily: "var(--d-display)",
-                zIndex: 10 - i,
+                zIndex: 10 - c.n,
               }}
             >
               <span
@@ -430,7 +432,7 @@ export function ShopMap({ chairs }: { chairs: ChairInfo[] }) {
               >
                 {c.n}
               </span>
-              <span className="hidden sm:inline">{c.name ?? "Open"}</span>
+              <span>{c.name}</span>
             </button>
           );
         })}
@@ -443,27 +445,27 @@ export function ShopMap({ chairs }: { chairs: ChairInfo[] }) {
           ↑ You walk in here
         </span>
         <span
-          className="pointer-events-none absolute hidden -translate-x-1/2 whitespace-nowrap text-[10px] uppercase tracking-[0.14em] sm:block"
-          style={{ ...pct(P(1.2, 4, 4.6)), color: "var(--d-body)" }}
+          className="pointer-events-none absolute hidden -translate-x-1/2 whitespace-nowrap px-1.5 py-0.5 text-[11px] uppercase tracking-[0.14em] sm:block"
+          style={{ ...pct(P(1.2, 4, 4.6)), color: "var(--d-fg)", background: "rgba(22,17,12,.8)" }}
         >
           Register
         </span>
         <span
-          className="pointer-events-none absolute hidden -translate-x-1/2 whitespace-nowrap text-[10px] uppercase tracking-[0.14em] sm:block"
-          style={{ ...pct(P(14.1, 10.2, 0)), color: "var(--d-body)" }}
+          className="pointer-events-none absolute hidden -translate-x-1/2 whitespace-nowrap px-1.5 py-0.5 text-[11px] uppercase tracking-[0.14em] sm:block"
+          style={{ ...pct(P(14.1, 10.2, 0)), color: "var(--d-fg)", background: "rgba(22,17,12,.8)" }}
         >
           Waiting area
         </span>
         <span
-          className="pointer-events-none absolute bottom-2 right-3 text-[9px] uppercase tracking-[0.16em] sm:text-[10px]"
-          style={{ color: "var(--d-muted)" }}
+          className="pointer-events-none absolute bottom-2 right-3 text-[10px] uppercase tracking-[0.16em] sm:text-[11px]"
+          style={{ color: "var(--d-body)" }}
         >
           Main Street ↓
         </span>
       </div>
 
       {/* legend */}
-      <ol className="grid grid-cols-1 gap-px sm:grid-cols-2 lg:grid-cols-1" style={{ background: "var(--d-line)" }}>
+      <ol className="grid grid-cols-1 gap-px sm:grid-cols-3 lg:grid-cols-1" style={{ background: "var(--d-line)" }}>
         {chairs.map((c) => {
           const on = active === c.n;
           return (
@@ -476,23 +478,18 @@ export function ShopMap({ chairs }: { chairs: ChairInfo[] }) {
             >
               <span
                 className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-[14px] font-semibold"
-                style={{
-                  background: c.name ? "var(--d-accent)" : "transparent",
-                  color: c.name ? "var(--d-onaccent)" : "var(--d-muted)",
-                  border: c.name ? "none" : "1px solid var(--d-line)",
-                  fontFamily: "var(--d-display)",
-                }}
+                style={{ background: "var(--d-accent)", color: "var(--d-onaccent)", fontFamily: "var(--d-display)" }}
               >
                 {c.n}
               </span>
               <div>
                 <div
                   className="text-[20px] font-medium uppercase leading-none tracking-[0.02em]"
-                  style={{ color: c.name ? "var(--d-fg)" : "var(--d-muted)", fontFamily: "var(--d-display)" }}
+                  style={{ color: "var(--d-fg)", fontFamily: "var(--d-display)" }}
                 >
-                  {c.name ?? "Open chair"}
+                  {c.name}
                 </div>
-                <p className="mt-2 text-[14px] leading-[1.5]" style={{ color: "var(--d-muted)" }}>
+                <p className="mt-2 text-[14px] leading-[1.5]" style={{ color: "var(--d-body)" }}>
                   {c.note}
                 </p>
               </div>

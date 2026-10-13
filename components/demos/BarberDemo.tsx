@@ -34,8 +34,8 @@ const THEME: DemoTheme = {
   bg: "#16110C",
   surface: "#20180F",
   fg: "#F0E7D6",
-  body: "#C2B49C",
-  muted: "#8A7B65",
+  body: "#D3C6AF",
+  muted: "#A89880",
   line: "#2E2419",
   accent: ACCENT,
   onAccent: "#16110C",
@@ -76,10 +76,10 @@ const BOARD = [
   { name: "Cut, Shampoo & Style", price: "$35", note: "Washed, cut, and styled before you leave the chair." },
 ];
 
-// Chairs numbered from the front door back. Chair 2 has no regular barber.
+// Chairs numbered from the front door back. Chair 2 has no regular barber,
+// so it's drawn on the map but left unlabeled.
 const CHAIRS: ChairInfo[] = [
   { n: 1, name: "Al", note: "First chair inside the door. Runs the shop, cuts every day." },
-  { n: 2, name: null, note: "No regular barber. Whoever's free may wave you over." },
   { n: 3, name: "Vlad", note: "Runs the shop, cuts every day." },
   { n: 4, name: "Rafael", note: "Last chair at the back. Al and Vlad's dad, still behind the chair." },
 ];
@@ -280,7 +280,8 @@ export function BarberDemo() {
         ]}
         cta="Call (516) 399-2220"
         phone={PHONE}
-        mediaLabel="THE SHOP: interior, chairs and mirrors, warm light (16:9)"
+        mediaLabel="The shop floor: four barber chairs in front of wood stations and mirrors, lit warm"
+        image="/the-shop.webp"
       />
       <YourBarbers />
       <TheChair />
