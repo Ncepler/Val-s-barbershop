@@ -25,6 +25,7 @@ import {
   type WeekHours,
 } from "./system";
 import { telHref } from "./phone";
+import { ShopMap, type ChairInfo } from "./ShopMap";
 
 const ACCENT = "#B0833F"; // brass / gold — warm lamplight (primary)
 const OXBLOOD = "#9A3B33"; // deep oxblood (secondary, used sparingly)
@@ -59,7 +60,7 @@ const SHOP_HOURS: WeekHours = [
   null, // Sat — closed
 ];
 
-// Hero photo lives in /public — every other Media placeholder stays empty and labeled.
+// Photos live in /public — every other Media placeholder stays empty and labeled.
 const firstBarberImage = "/main-hero.png";
 
 // The price board — nine services, exact prices and notes.
@@ -75,25 +76,12 @@ const BOARD = [
   { name: "Cut, Shampoo & Style", price: "$35", note: "Washed, cut, and styled before you leave the chair." },
 ];
 
-const BARBERS = [
-  {
-    name: "Al",
-    role: "Runs the shop, cuts every day.",
-    label: "AL: headshot (4:5)",
-    file: "al-headshot.jpg",
-  },
-  {
-    name: "Vlad",
-    role: "Runs the shop, cuts every day.",
-    label: "VLAD: headshot (4:5)",
-    file: "vlad-headshot.jpg",
-  },
-  {
-    name: "Rafael",
-    role: "Al and Vlad's dad. Still behind the chair.",
-    label: "RAFAEL: headshot (4:5)",
-    file: "rafael-headshot.jpg",
-  },
+// Chairs numbered from the front door back. Chair 2 has no regular barber.
+const CHAIRS: ChairInfo[] = [
+  { n: 1, name: "Al", note: "First chair inside the door. Runs the shop, cuts every day." },
+  { n: 2, name: null, note: "No regular barber. Whoever's free may wave you over." },
+  { n: 3, name: "Vlad", note: "Runs the shop, cuts every day." },
+  { n: 4, name: "Rafael", note: "Last chair at the back. Al and Vlad's dad, still behind the chair." },
 ];
 
 const FAQ = [
@@ -178,34 +166,29 @@ function PriceBoard() {
   );
 }
 
-// ── Your barbers — three headshots, equal weight, no ranking implied. ──────
+// ── Your barbers — who sits where, drawn from the front door. ────────────
 function YourBarbers() {
   return (
     <Section>
-      <Rise>
-        <Eyebrow>Your barbers</Eyebrow>
-        <div className="mt-5">
-          <TwoLine a="Al, Vlad," b="and Rafael." />
+      <div className="grid gap-6 md:grid-cols-2 md:items-end">
+        <Rise>
+          <Eyebrow>Your barbers</Eyebrow>
+          <div className="mt-5">
+            <TwoLine a="Al, Vlad," b="and Rafael." />
+          </div>
+        </Rise>
+        <Rise delay={0.05}>
+          <p className="text-[15px] leading-[1.6] md:text-right" style={{ color: "var(--d-body)" }}>
+            Walk in the front door and look left. The chairs run front to back
+            along the mirrors: Al up front, Vlad third, Rafael at the back.
+          </p>
+        </Rise>
+      </div>
+      <Rise delay={0.1}>
+        <div className="mt-12">
+          <ShopMap chairs={CHAIRS} />
         </div>
       </Rise>
-      <div className="mt-12 grid grid-cols-1 gap-8 md:grid-cols-3">
-        {BARBERS.map((b, i) => (
-          <Rise key={b.name} delay={i * 0.08}>
-            <Media label={b.label} file={b.file} ratio="4/5" />
-            <div className="mt-4">
-              <div
-                className="text-[20px] font-medium uppercase tracking-[0.02em]"
-                style={{ color: "var(--d-fg)", fontFamily: "var(--d-display)" }}
-              >
-                {b.name}
-              </div>
-              <p className="mt-1 text-[14px] leading-[1.5]" style={{ color: "var(--d-muted)" }}>
-                {b.role}
-              </p>
-            </div>
-          </Rise>
-        ))}
-      </div>
     </Section>
   );
 }
@@ -216,7 +199,7 @@ function TheChair() {
     <Section dark>
       <div className="grid items-center gap-10 md:grid-cols-2 md:gap-16">
         <Rise>
-          <Media label="THE CHAIR: the barber's station, close and warm (4:5)" file="the-chair.jpg" ratio="4/5" />
+          <Media label="A black leather barber chair at its station, lit warm" src="/the-chair.webp" ratio="4/5" />
         </Rise>
         <Rise delay={0.1}>
           <Eyebrow>Why this chair</Eyebrow>
